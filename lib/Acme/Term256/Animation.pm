@@ -12,7 +12,8 @@ Acme::Term256::Animation -
 
 =head1 SYNOPSIS
 
-  use Acme::Term256::Animation;
+  use Acme::Term256::Animation::GIF;
+  use Acme::Term256::Animation::FLV;
 
 =head1 DESCRIPTION
 
