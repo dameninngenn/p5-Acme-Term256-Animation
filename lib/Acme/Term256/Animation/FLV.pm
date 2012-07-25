@@ -7,18 +7,40 @@ use Term::ProgressBar;
 
 sub run {
     my $self = shift;
+# data/の掃除
+    my $gif_filenames = $self->flv2gif();
+    my $asciis = $self->get_asciis( $gif_filenames );
+    $self->do_animation( $asciis );
+}
+
+sub flv2gif {
+    my $self = shift;
 # XXX ここらへんちゃんとやる
+# dataの置き場所/指定
+# 既にextractしたgifがあった時のアレ
+# $ret => 0  # ok
+# ffmpeg確認
+# file存在確認
+    $self->_check_ffmpeg();
     my $data_dir = 'example/_data/';
     my $command = sprintf('ffmpeg -i %s -f image2 -r 15 %s%s.gif',$self->file, $data_dir, '%10d');
     my $ret = system($command);
     my @filenames = glob $data_dir . "*.gif";
-# $ret => 0  # ok
-# ffmpeg確認
-# file存在確認
-# data/の掃除
+    return \@filenames;
+}
 
-    my $asciis = $self->get_asciis( \@filenames );
-    $self->do_animation( $asciis );
+sub _check_ffmpeg {
+    my $self = shift;
+    if( $self->_hasnt_ffmpeg() ) {
+        die 'This script needs ffmpeg! Please install and try later!!';
+    }
+}
+
+sub _hasnt_ffmpeg {
+    my $self = shift;
+    my $command = 'ffmpeg -L > /dev/null 2>&1';
+    my $ret = system($command);
+    return $ret;
 }
 
 sub get_asciis {
