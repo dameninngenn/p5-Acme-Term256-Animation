@@ -7,7 +7,6 @@ use Term::ProgressBar;
 
 sub run {
     my $self = shift;
-    $self->_check_source_file();
 # data/の掃除
     my $gif_filenames = $self->flv2gif();
     my $asciis = $self->get_asciis( $gif_filenames );
