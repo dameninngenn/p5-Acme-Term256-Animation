@@ -2,7 +2,13 @@ use inc::Module::Install;
 name 'Acme-Term256-Animation';
 all_from 'lib/Acme/Term256/Animation.pm';
 
-# requires '';
+requires (
+    'Class::Accessor::Fast' => 0,
+    'Image::Term256Color' => 0,
+    'Time::HiRes' => 0,
+    'Imager' => 0,
+    'Term::ProgressBar' => 0,
+);
 
 tests 't/*.t';
 author_tests 'xt';
