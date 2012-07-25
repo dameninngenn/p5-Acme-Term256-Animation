@@ -7,6 +7,7 @@ use Term::ProgressBar;
 
 sub run {
     my $self = shift;
+    $self->_check_source_file();
 # data/の掃除
     my $gif_filenames = $self->flv2gif();
     my $asciis = $self->get_asciis( $gif_filenames );
@@ -16,7 +17,7 @@ sub run {
 sub flv2gif {
     my $self = shift;
 # XXX ここらへんちゃんとやる
-# dataの置き場所/指定
+# dataの置き場所/指定 /tmp/__PACKAGE__/fingerprint/*.gifとか
 # 既にextractしたgifがあった時のアレ
 # $ret => 0  # ok
 # ffmpeg確認

@@ -5,6 +5,7 @@ use parent qw(Class::Accessor::Fast);
 use Image::Term256Color;
 use Time::HiRes qw( usleep );
 
+# XXX 普通にnew書こう
 __PACKAGE__->mk_accessors(qw(file loop));
 
 sub get_scale_ratio {
@@ -43,6 +44,18 @@ sub gif2ascii {
     $gif->write(data => \$data, type => 'gif');
     my $ascii = Image::Term256Color::convert( $data, { scale_ratio => $scale_ratio } );
     return $ascii;
+}
+
+sub _check_source_file {
+    my $self = shift;
+    unless( $self->_is_exists_file ) {
+        die "Target file does not exist!!";
+    }
+}
+
+sub _is_exists_file {
+    my $self = shift;
+    return -e $self->file ? 1 : 0;
 }
 
 sub get_asciis {

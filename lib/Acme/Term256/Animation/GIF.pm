@@ -7,6 +7,7 @@ use Term::ProgressBar;
 
 sub run {
     my $self = shift;
+    $self->_check_source_file();
     my $img = Imager->new;
     # $self->file のvalidation
     my @gif = $img->read_multi( file => $self->file ) or die $img->errstr;
