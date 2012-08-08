@@ -17,11 +17,11 @@ sub run {
 sub flv2gif {
     my $self = shift;
     $self->_check_ffmpeg();
-    $self->tmpdir( $self->mk_tmpdir() );
+    my $tmpdir = $self->mk_tmpdir();
 
-    my $command = sprintf('ffmpeg -i %s -f image2 -r 15 %s%s.gif',$self->file, $self->tmpdir, '%10d');
+    my $command = sprintf('ffmpeg -i %s -f image2 -r 15 %s%s.gif',$self->file, $tmpdir, '%10d');
     my $ret = system($command);
-    my @filenames = glob $self->tmpdir . "*.gif";
+    my @filenames = glob $tmpdir . "*.gif";
     return \@filenames;
 }
 

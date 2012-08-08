@@ -6,7 +6,7 @@ use Image::Term256Color;
 use Time::HiRes qw( usleep );
 use Digest::SHA1;
 
-__PACKAGE__->mk_accessors(qw(file loop tmpdir));
+__PACKAGE__->mk_accessors(qw(file loop));
 
 sub new {
     my $class = shift;
