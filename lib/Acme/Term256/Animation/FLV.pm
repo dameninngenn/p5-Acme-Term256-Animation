@@ -4,6 +4,7 @@ use warnings;
 use parent qw(Acme::Term256::Animation::Base);
 use Imager;
 use Term::ProgressBar;
+use File::Path qw(mkpath rmtree);
 
 sub run {
     my $self = shift;
@@ -15,18 +16,25 @@ sub run {
 
 sub flv2gif {
     my $self = shift;
-# XXX ここらへんちゃんとやる
-# dataの置き場所/指定 /tmp/__PACKAGE__/fingerprint/*.gifとか
-# 既にextractしたgifがあった時のアレ
-# $ret => 0  # ok
-# ffmpeg確認
-# file存在確認
     $self->_check_ffmpeg();
-    my $data_dir = 'example/_data/';
-    my $command = sprintf('ffmpeg -i %s -f image2 -r 15 %s%s.gif',$self->file, $data_dir, '%10d');
+    $self->tmpdir( $self->mk_tmpdir() );
+
+    my $command = sprintf('ffmpeg -i %s -f image2 -r 15 %s%s.gif',$self->file, $self->tmpdir, '%10d');
     my $ret = system($command);
-    my @filenames = glob $data_dir . "*.gif";
+    my @filenames = glob $self->tmpdir . "*.gif";
     return \@filenames;
+}
+
+sub mk_tmpdir {
+    my $self = shift;
+    my $digest = $self->get_hexdigest();
+    my $tmpdir = sprintf( sprintf('/tmp/%s/', $digest) );
+    if( -d $tmpdir ) {
+        eval{ rmtree($tmpdir); };
+        die "$@" if $@;
+    }
+    mkpath($tmpdir) or die "can't make directory [$tmpdir]";
+    return $tmpdir;
 }
 
 sub _check_ffmpeg {

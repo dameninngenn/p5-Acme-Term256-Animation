@@ -4,8 +4,9 @@ use warnings;
 use parent qw(Class::Accessor::Fast);
 use Image::Term256Color;
 use Time::HiRes qw( usleep );
+use Digest::SHA1;
 
-__PACKAGE__->mk_accessors(qw(file loop));
+__PACKAGE__->mk_accessors(qw(file loop tmpdir));
 
 sub new {
     my $class = shift;
@@ -14,6 +15,16 @@ sub new {
     die 'require file name!' unless $args->{file};
     die 'target file does not exist!!' unless -e $args->{file};
     return $class->SUPER::new( $args );
+}
+
+sub get_hexdigest {
+    my $self = shift;
+    open my $fh, '<', $self->file or die "$self->file can't read!!";
+    my $sha1 = Digest::SHA1->new;
+    $sha1->addfile($fh);
+    my $hexdigest = $sha1->hexdigest;
+    close($fh);
+    return $hexdigest;
 }
 
 sub get_scale_ratio {
