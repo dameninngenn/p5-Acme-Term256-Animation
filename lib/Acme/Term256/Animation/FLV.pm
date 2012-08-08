@@ -4,7 +4,6 @@ use warnings;
 use parent qw(Acme::Term256::Animation::Base);
 use Imager;
 use Term::ProgressBar;
-use File::Path qw(mkpath rmtree);
 
 sub run {
     my $self = shift;
@@ -22,30 +21,6 @@ sub flv2gif {
     my $ret = system($command);
     my @filenames = glob $tmpdir . "*.gif";
     return \@filenames;
-}
-
-sub mk_tmpdir {
-    my $self = shift;
-    my $tmpdir = $self->rm_tmpdir();
-    mkpath($tmpdir) or die "can't make directory [$tmpdir]";
-    return $tmpdir;
-}
-
-sub rm_tmpdir {
-    my $self = shift;
-    my $tmpdir = $self->tmpdir_name();
-    if( -d $tmpdir ) {
-        eval{ rmtree($tmpdir); };
-        die "$@" if $@;
-    }
-    return $tmpdir;
-}
-
-sub tmpdir_name {
-    my $self = shift;
-    my $digest = $self->get_hexdigest();
-    my $tmpdir = sprintf( sprintf('/tmp/%s/', $digest) );
-    return $tmpdir;
 }
 
 sub _check_ffmpeg {

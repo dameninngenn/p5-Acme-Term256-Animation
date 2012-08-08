@@ -5,6 +5,7 @@ use parent qw(Class::Accessor::Fast);
 use Image::Term256Color;
 use Time::HiRes qw( usleep );
 use Digest::SHA1;
+use File::Path qw(mkpath rmtree);
 
 __PACKAGE__->mk_accessors(qw(file loop));
 
@@ -26,6 +27,31 @@ sub get_hexdigest {
     close($fh);
     return $hexdigest;
 }
+
+sub mk_tmpdir {
+    my $self = shift;
+    my $tmpdir = $self->rm_tmpdir();
+    mkpath($tmpdir) or die "can't make directory [$tmpdir]";
+    return $tmpdir;
+}
+
+sub rm_tmpdir {
+    my $self = shift;
+    my $tmpdir = $self->tmpdir_name();
+    if( -d $tmpdir ) {
+        eval{ rmtree($tmpdir); };
+        die "$@" if $@;
+    }
+    return $tmpdir;
+}
+
+sub tmpdir_name {
+    my $self = shift;
+    my $digest = $self->get_hexdigest();
+    my $tmpdir = sprintf( sprintf('/tmp/%s/', $digest) );
+    return $tmpdir;
+}
+
 
 sub get_scale_ratio {
     my $self = shift;
