@@ -10,6 +10,7 @@ requires (
     'Term::ProgressBar' => 0,
     'File::Path' => 0,
     'Digest::SHA1' => 0,
+    'FindBin::libs' => 0,
 );
 
 tests 't/*.t';
