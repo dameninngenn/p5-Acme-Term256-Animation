@@ -8,7 +8,6 @@ use File::Path qw(mkpath rmtree);
 
 sub run {
     my $self = shift;
-# data/の掃除
     my $gif_filenames = $self->flv2gif();
     my $asciis = $self->get_asciis( $gif_filenames );
     $self->do_animation( $asciis );
@@ -27,13 +26,25 @@ sub flv2gif {
 
 sub mk_tmpdir {
     my $self = shift;
-    my $digest = $self->get_hexdigest();
-    my $tmpdir = sprintf( sprintf('/tmp/%s/', $digest) );
+    my $tmpdir = $self->rm_tmpdir();
+    mkpath($tmpdir) or die "can't make directory [$tmpdir]";
+    return $tmpdir;
+}
+
+sub rm_tmpdir {
+    my $self = shift;
+    my $tmpdir = $self->tmpdir_name();
     if( -d $tmpdir ) {
         eval{ rmtree($tmpdir); };
         die "$@" if $@;
     }
-    mkpath($tmpdir) or die "can't make directory [$tmpdir]";
+    return $tmpdir;
+}
+
+sub tmpdir_name {
+    my $self = shift;
+    my $digest = $self->get_hexdigest();
+    my $tmpdir = sprintf( sprintf('/tmp/%s/', $digest) );
     return $tmpdir;
 }
 
@@ -73,6 +84,7 @@ sub get_asciis {
         $count++;
         $progress->update($count);
     }
+    $self->rm_tmpdir();
     return \@asciis;
 }
 
